@@ -8,6 +8,13 @@ import tqdm
 params = {
     'aura.ApexAction.execute': '1',
 }
+
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+# Dockets were obtained by scraping the main USTR list page; the reason this is
+# not implemented as a requests based scraper is because populating the docket
+# list is a bit of a pain, and even once loaded, the nodes are in the "shadow
+# DOM" so traditional Selenium scraping approaches don't work well. Anyway,
+# this is all the dockets available.
 all_dockets = ['https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0020', 'https://comments.ustr.gov/portal/s/submitnewcomment?docketNumber=USTR-2024-0020', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0025', 'https://comments.ustr.gov/s/submit-new-comment?docketNumber=USTR-2024-0025', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0024', 'https://comments.ustr.gov/s/submit-new-comment?docketNumber=USTR-2024-0024', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0021', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0022', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0016', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0007', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0005', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0004', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2024-0001', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2023-0001', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2022-0014', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2022-0009', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2022-0007', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2022-0001', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0019', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2019-0017', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0010', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0003', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0006', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0002', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0004', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0005', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0007', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0008', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0002-Hearing', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0003-Hearing', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0004-Hearing', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0005-Hearing', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0007-Hearing', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0006-Hearing', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2021-0008-Hearing', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0027', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0030', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0031', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0029', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0026', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0023', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0016', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0021', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0015', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0018', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0017', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2020-0013', 'https://comments.ustr.gov/s/docket?docketNumber=USTR-2019-0005']
 all_dockets = list(set([x.split("=", 1)[1] for x in all_dockets]))
 
@@ -103,7 +110,7 @@ def pull_comment(docket_id, comment_id):
 
     res = requests.post('https://comments.ustr.gov/s/sfsites/aura', params=p2, data=data, timeout=30)
     d = json.loads(res.text)
-    
+
     with open(f"dockets/{docket_id}/{comment_id}.json", "w") as outfile:
         json.dump(d["actions"][0]["returnValue"]["returnValue"], outfile)
 
