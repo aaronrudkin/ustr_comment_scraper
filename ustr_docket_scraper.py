@@ -37,17 +37,18 @@ def docket_get_comments(docket_id, max_id):
         error_count = 0
         while error_count < 4:
             try:
-                res = requests.post('https://comments.ustr.gov/s/sfsites/aura', params=params, data=data, timeout=30)
+                res = requests.post('https://comments.ustr.gov/s/sfsites/aura', params=params, data=data, timeout=3)
                 error_count = 0
+                break
             except:
                 print("Timeout!")
                 time.sleep(5)
-                break
             error_count = error_count + 1
         if error_count:
             print(f"DID NOT COMPLETE, stopped at {min_id}")
             return results
 
+        print("Page load done")
         d = json.loads(res.text)
         rdf = pd.DataFrame.from_records(d["actions"][0]["returnValue"]["returnValue"])
 
@@ -67,7 +68,11 @@ def write_docket(docket_id):
     max_num = docket_get_count(docket_id)
     print(f"Docket {docket_id} max {max_num}")
     results = docket_get_comments(docket_id, max_num)
-    print(f"Docket has {results.shape[0]} rows")
+    try:
+        print(f"Docket has {results.shape[0]} rows")
+    except:
+        print("Catastrophic failure....")
+        return
     results.to_csv(f'{docket_id}.csv', index=False)
 
 def do_all_dockets(dockets):
