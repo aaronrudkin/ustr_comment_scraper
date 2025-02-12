@@ -105,7 +105,7 @@ def docket_get_comments(docket_id, max_id):
     return results
 
 def write_docket(docket_id):
-    if os.path.isfile(f"{docket_id}.csv"):
+    if os.path.isfile(f"dockets/{docket_id}.csv"):
         return
 
     max_num = docket_get_count(docket_id)
@@ -116,7 +116,7 @@ def write_docket(docket_id):
     except:
         print("Catastrophic failure....")
         return
-    results.to_csv(f'{docket_id}.csv', index=False)
+    results.to_csv(f'dockets/{docket_id}.csv', index=False)
 
 def do_all_dockets(dockets):
     os.makedirs("dockets/", exist_ok=True)
@@ -127,7 +127,7 @@ def do_all_dockets(dockets):
 
 def all_comments_from_docket(docket_id):
     try:
-        df = pd.read_csv(f"{docket_id}.csv")
+        df = pd.read_csv(f"dockets/{docket_id}.csv")
     except:
         return
     print(f"Pulling comments for docket {docket_id}")
